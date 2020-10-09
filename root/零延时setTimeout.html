@@ -1,0 +1,16 @@
+<p>setTimeout(func, 0) 或 setTimeout(func)。在当前脚本执行完后立即调用，最少的延迟是 4ms。</p>
+<h3 id="事件循环：微任务和宏任务">事件循环：微任务和宏任务</h3>
+<p>一个任务到来时，引擎可能正处于繁忙状态，那么这个任务就会被排入队列。 多个任务组成了一个队列，即所谓的“宏任务队列”</p>
+<p><img src="https://zh.javascript.info/article/event-loop/eventLoop.svg" alt="eventLoop"></p>
+<ol>
+<li>引擎执行任务时永远不会进行渲染（render）。如果任务执行需要很长一段时间也没关系。仅在任务完成后才会绘制对 DOM 的更改。</li>
+<li>如果一项任务执行花费的时间过长，浏览器将无法执行其他任务，无法处理用户事件，因此，在一定时间后浏览器会在整个页面抛出一个如“页面未响应”之类的警报，建议你终止这个任务。这种情况常发生在有大量复杂的计算或导致死循环的程序错误时。</li>
+</ol>
+<h4 id="举例-1：拆分-cpu-过载任务">举例 1：拆分 CPU 过载任务</h4>
+<p><a href="https://zh.javascript.info/event-loop#yong-li-1-chai-fen-cpu-guo-zai-ren-wu">https://zh.javascript.info/event-loop#yong-li-1-chai-fen-cpu-guo-zai-ren-wu</a></p>
+<h4 id="举例-2：进度指示">举例 2：进度指示</h4>
+<p><a href="https://zh.javascript.info/event-loop#yong-li-2-jin-du-zhi-shi">https://zh.javascript.info/event-loop#yong-li-2-jin-du-zhi-shi</a></p>
+<h4 id="举例-3：在事件之后做一些事情">举例 3：在事件之后做一些事情</h4>
+<p><a href="https://zh.javascript.info/event-loop#yong-li-3-zai-shi-jian-zhi-hou-zuo-yi-xie-shi-qing">https://zh.javascript.info/event-loop#yong-li-3-zai-shi-jian-zhi-hou-zuo-yi-xie-shi-qing</a></p>
+<h4 id="微任务和宏任务">微任务和宏任务</h4>
+<p><img src="https://zh.javascript.info/article/event-loop/eventLoop-full.svg" alt="eventLoop-full"></p>

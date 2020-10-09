@@ -1,0 +1,59 @@
+<h4 id="使用-setinterval">使用 setInterval</h4>
+<pre><code class="language-js"><span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>;
+<span class="hljs-built_in">setInterval</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  func(i++);
+}, <span class="hljs-number">100</span>);</code></pre>
+<p><img src="https://zh.javascript.info/article/settimeout-setinterval/setinterval-interval.svg" alt="setInterval"></p>
+<p><strong>注意到了吗？ func 的执行耗费时间耗费了轮询间隔</strong></p>
+<h4 id="使用-settimeout">使用 setTimeout</h4>
+<pre><code class="language-js"><span class="hljs-comment">// 1</span>
+<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;
+<span class="hljs-built_in">setTimeout</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">func</span>(<span class="hljs-params"></span>) </span>{
+  func(i++);
+  <span class="hljs-built_in">setTimeout</span>(f, <span class="hljs-number">100</span>);
+}, <span class="hljs-number">100</span>);
+
+<span class="hljs-comment">// 2</span>
+<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">newInterval</span>(<span class="hljs-params">task, clear, time, delay = time</span>) </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">inside</span>(<span class="hljs-params"></span>) </span>{
+    task();
+    clear(<span class="hljs-built_in">setTimeout</span>(inside, time));
+  }
+  <span class="hljs-built_in">setTimeout</span>(inside, delay);
+}
+
+newInterval(
+  <span class="hljs-function">() =&gt;</span> {
+    alert(i++);
+  },
+  <span class="hljs-function">(<span class="hljs-params">timeId</span>) =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(timeId);
+  },
+  <span class="hljs-number">3000</span>,
+  <span class="hljs-number">1000</span>
+);</code></pre>
+<p><img src="https://zh.javascript.info/article/settimeout-setinterval/settimeout-interval.svg" alt="setTimeout"></p>
+<p><strong>内部调度程序固定间隔 100</strong></p>
+<h4 id="使用-rxjs-intervaltimer">使用 rxjs interval/timer</h4>
+<pre><code class="language-js">interval(<span class="hljs-number">1000</span>)
+  .pipe(tap(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> func(i)))
+  .subscribe();</code></pre>
+<p><strong>相当于 setInterval</strong></p>
+<h4 id="使用-rxjs-delay-repeat-takeuntil">使用 rxjs delay repeat takeUntil</h4>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> { <span class="hljs-keyword">of</span>, fromEvent } = rxjs;
+<span class="hljs-keyword">const</span> { repeat, tap, delay, takeUntil } = rxjs.operators;
+<span class="hljs-keyword">const</span> documentClick = fromEvent(<span class="hljs-built_in">document</span>, <span class="hljs-string">&quot;click&quot;</span>);
+<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;
+
+<span class="hljs-keyword">of</span>(<span class="hljs-number">0</span>)
+  .pipe(
+    tap(<span class="hljs-function">() =&gt;</span> {
+      alert(i++);
+    }),
+    delay(<span class="hljs-number">1000</span>),
+    repeat(),
+    takeUntil(documentClick)
+  )
+  .subscribe();</code></pre>
+<p><strong>源在【alert 消耗时间+1s】后重复，监听 document 被点击后取消源</strong></p>
